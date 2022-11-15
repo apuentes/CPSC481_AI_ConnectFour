@@ -2,6 +2,7 @@
 <html>
 <head>
     <script src="https://cdn.jsdelivr.net/npm/phaser@3.15.1/dist/phaser-arcade-physics.min.js"></script>
+    <!--<script src="./phaser.min.js"></script>-->
 </head>
 <body>
 
@@ -18,40 +19,154 @@
         },
         scene: {
             preload: preload,
-            create: create
+            create: create,
+            update: update
         }
     };
 
+    var pPieces = [];
+    var aiPieces = [];
+                /* Column X Coords
+            242-262  Col 1
+            296-313  Col 2
+            349-366  Col 3
+            405-415  Col 4
+            457-470  Col 5
+            507-521  Col 6
+            560-576  Col 7
+
+            */
+    var pieceColLoc = [242,296,349,400,452,505,558];
+    var pieceRowLoc = [430,373,320,263,208,153];
+    var board = [[0,0,0,0,0,0,0],
+                [0,0,0,0,0,0,0],
+                [0,0,0,0,0,0,0],
+                [0,0,0,0,0,0,0],
+                [0,0,0,0,0,0,0],
+                [0,0,0,0,0,0,0]];
+    var pPieceCol;
+    var keyReleased;
+    var addPiece;
     var game = new Phaser.Game(config);
+
 
     function preload ()
     {
-        this.load.setBaseURL('http://labs.phaser.io');
 
-        this.load.image('sky', 'assets/skies/space3.png');
-        this.load.image('logo', 'assets/sprites/phaser3-logo.png');
-        this.load.image('red', 'assets/particles/red.png');
+        this.load.image('board', 'assets/c4Board.png');
+        this.load.image('red', 'assets/redPiece.png');
+        this.load.image('yellow', 'assets/yellPiece.png');
+
     }
 
     function create ()
     {
-        this.add.image(400, 300, 'sky');
+        this.left = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.LEFT);
+        this.right = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.RIGHT);
+        this.enter = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.ENTER);
 
-        var particles = this.add.particles('red');
 
-        var emitter = particles.createEmitter({
-            speed: 100,
-            scale: { start: 1, end: 0 },
-            blendMode: 'ADD'
-        });
+        //create game pieces
+        for (let i=0; i<42; i++)
+        {
+            pPieces.push(this.add.sprite(242,-50, 'red').setScale(.5));
+            aiPieces.push(this.add.sprite(242,-50, 'yellow').setScale(.5));
+        }
 
-        var logo = this.physics.add.image(400, 100, 'logo');
+        this.pPosPiece = this.add.sprite(242, 528, 'red').setScale(.5);
+        var pointer = this.input.activePointer;
+        var gameBoard = this.add.image(400, 300, 'board');
+        gameBoard.setScale(1.5);
+        console.log(game.input.x+" "+game.input.y);
+        this.posY = 0;
 
-        logo.setVelocity(100, 200);
-        logo.setBounce(1, 1);
-        logo.setCollideWorldBounds(true);
 
-        emitter.startFollow(logo);
+    }
+
+    function clearBoard()
+    {
+        //TODO create a clear board function that pours the pieces down the bottom
+        // and bounce out of scene
+
+    }
+
+
+
+    function update()
+    {
+        
+        if (addPiece)
+        {
+            if (newPlayerPiece.y < row)
+            {
+                newPlayerPiece.y = newPlayerPiece.y +10;
+            }
+            else if (newPlayerPiece.y >= row)
+            {
+                addPiece = false;
+            }
+        }
+
+        if (this.left.isDown)
+        {
+            if (this.keyReleased==true)
+            {
+                for (let i=0; i<=6; i++)
+                {
+                    if(this.pPosPiece.x == pieceColLoc[i] && i >0)
+                    {
+                        this.pPosPiece.x = pieceColLoc[i-1];
+                        pPieceCol = i-1;
+                        break;
+                    }
+                }
+                this.keyReleased = false;
+            }
+        }
+        else if (this.right.isDown)
+        {
+            if (this.keyReleased==true)
+            {
+                for (let i=0; i<6; i++){
+                    if(this.pPosPiece.x == pieceColLoc[i] && i <6)
+                    {
+                        this.pPosPiece.x = pieceColLoc[i+1];
+                        pPieceCol = i+1;
+                        break;
+                    }
+                }
+                this.keyReleased = false;
+            }
+        }
+        else if (this.enter.isDown)
+        {
+            
+            if (this.keyReleased==true)
+            {
+                for (let i=0; i<=5; i++)
+                {
+                    if (board[i][pPieceCol] == 0)
+                    {
+                        row = pieceRowLoc[i];
+                        board[i][pPieceCol] = 1;
+                        break;
+                    }
+                }
+                newPlayerPiece = pPieces.pop();
+                newPlayerPiece.x = this.pPosPiece.x;
+                addPiece = true;
+            }
+            this.keyReleased = false;
+        }
+        else if (this.left.isUp && 
+                this.right.isUp && 
+                this.enter.isUp &&
+                !addPiece)
+        {
+            this.keyReleased = true;
+        }
+
+         
     }
     </script>
     <!--<script type="module" src="./phaser/dist/phaser.js" charset="utf-8"></script>-->
