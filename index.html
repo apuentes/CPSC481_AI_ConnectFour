@@ -44,7 +44,7 @@
                 [0,0,0,0,0,0,0],
                 [0,0,0,0,0,0,0],
                 [0,0,0,0,0,0,0]];
-    var pPieceCol;
+    var pPieceCol = 0;
     var keyReleased;
     var addPiece;
     var game = new Phaser.Game(config);
@@ -90,7 +90,50 @@
 
     }
 
+    function isWinner()
+    {
+        //Check for horizontal winner
+        let consec = 0;
+        for (let i=0; i<=5; i++)
+        {
+            for (let j=0; j<=6; j++)
+            {
+                if (board[i][j]==1)
+                {
+                    consec = consec +1;
+                    if (consec==4)
+                    {
+                        return true;
+                    }
+                }
+                else if(board[i][j]==0)
+                {
+                    consec = 0;
+                }
+            }
+ 
+        }
+        //Check for vertical winner
+        consec = 0;
+        for (let i=0; i<=5; i++)
+        {
+            if (board[i][pPieceCol]==1)
+            {
+                consec = consec+1;
+                if (consec==4)
+                {
+                    return true;
+                }
+            }
+            else
+            {
+                    consec = 0;
+            }
+        }
+        
+        return false;
 
+    }
 
     function update()
     {
@@ -104,6 +147,10 @@
             else if (newPlayerPiece.y >= row)
             {
                 addPiece = false;
+                if(isWinner())
+                {
+                    console.log("You're a WEINER!!!!")
+                }
             }
         }
 
