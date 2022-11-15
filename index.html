@@ -45,6 +45,7 @@
                 [0,0,0,0,0,0,0],
                 [0,0,0,0,0,0,0]];
     var pPieceCol = 0;
+    var player = 1;
     var keyReleased;
     var addPiece;
     var game = new Phaser.Game(config);
@@ -90,6 +91,7 @@
 
     }
 
+    //TODO pass in player
     function isWinner()
     {
         //Check for horizontal winner
@@ -115,7 +117,7 @@
         }
         //Check for vertical winner
         consec = 0;
-        for (let i=0; i<=5; i++)
+        for (let i=0; i<3; i++)
         {
             if (board[i][pPieceCol]==1)
             {
@@ -130,6 +132,28 @@
                     consec = 0;
             }
         }
+        //Check positive slope winner
+        for (let i=0; i<3; i++)
+        {
+            for (let j=0; j<4; j++)
+            {
+                if (board[i][j]==1 && board[i+1][j+1]==1 && board[i+2][j+2]==1 && board[i+3][j+3]==1)
+                {
+                    return true;
+                }
+            }
+         }
+        //Check negative slope winner
+        for (let i=5; i>2; i--)
+        {
+            for (let j=0; j<4; j++)
+            {
+                if (board[i][j]==1 && board[i-1][j+1]==1 && board[i-2][j+2]==1 && board[i-3][j+3]==1)
+                {
+                    return true;
+                }
+            }
+         }
         
         return false;
 
@@ -149,7 +173,7 @@
                 addPiece = false;
                 if(isWinner())
                 {
-                    console.log("You're a WEINER!!!!")
+                    console.log("You're a WEINER!!!!");
                 }
             }
         }
@@ -195,7 +219,8 @@
                     if (board[i][pPieceCol] == 0)
                     {
                         row = pieceRowLoc[i];
-                        board[i][pPieceCol] = 1;
+                        board[i][pPieceCol] = player;
+                        player = !player;
                         break;
                     }
                 }
