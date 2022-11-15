@@ -224,7 +224,15 @@
                         break;
                     }
                 }
-                newPlayerPiece = pPieces.pop();
+                if (player)
+                {
+                    newPlayerPiece = pPieces.pop();
+                }
+                else
+                {
+                    newPlayerPiece = aiPieces.pop();
+                }
+                
                 newPlayerPiece.x = this.pPosPiece.x;
                 addPiece = true;
             }
