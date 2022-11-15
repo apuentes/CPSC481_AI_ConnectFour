@@ -227,13 +227,15 @@
                 }
                 if (player)
                 {
+                    console.log("Inside "+player+" piece to choose");
                     newPlayerPiece = pPieces.pop();
                 }
                 else
                 {
+                    console.log("Inside "+player+" piece to choose");
                     newPlayerPiece = aiPieces.pop();
                 }
-                console.log("Player "+player+" piece was chosen");
+
                 newPlayerPiece.x = this.pPosPiece.x;
                 addPiece = true;
             }
