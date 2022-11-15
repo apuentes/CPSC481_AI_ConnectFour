@@ -173,7 +173,7 @@
                 addPiece = false;
                 if(isWinner())
                 {
-                    console.log("You're a WEINER!!!!");
+                    console.log("Player "+player+"is the WIENER!!!!");
                 }
             }
         }
@@ -221,6 +221,7 @@
                         row = pieceRowLoc[i];
                         board[i][pPieceCol] = player;
                         player = -player;
+                        console.log(board);
                         break;
                     }
                 }
