@@ -229,14 +229,16 @@
                 {
                     console.log("Inside "+player+" piece to choose");
                     newPlayerPiece = pPieces.pop();
+                    newPlayerPiece.x = this.pPosPiece.x;
                 }
                 else
                 {
                     console.log("Inside "+player+" piece to choose");
                     newPlayerPiece = aiPieces.pop();
+                    newPlayerPiece.x = this.pPosPiece.x;
                 }
 
-                newPlayerPiece.x = this.pPosPiece.x;
+
                 addPiece = true;
             }
             this.keyReleased = false;
