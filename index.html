@@ -225,14 +225,14 @@
                         break;
                     }
                 }
-                if (player)
+                if (player==1)
                 {
  
                     newPlayerPiece = pPieces.pop();
                     console.log("Player 1 piece assigned; Player="+player);
 
                 }
-                else
+                else if (player==-1)
                 {
 
                     newPlayerPiece = aiPieces.pop();
