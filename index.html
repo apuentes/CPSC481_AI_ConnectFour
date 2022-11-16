@@ -227,15 +227,16 @@
                 }
                 if (player)
                 {
-                    console.log("Player 1 piece assigned"); 
+ 
                     newPlayerPiece = pPieces.pop();
+                    console.log("Player 1 piece assigned");
 
                 }
                 else
                 {
-                    console.log("Player AI piece assigned");
-                    newPlayerPiece = aiPieces.pop();
 
+                    newPlayerPiece = aiPieces.pop();
+                    console.log("Player AI piece assigned");
                 }
                 newPlayerPiece.x = this.pPosPiece.x;
 
