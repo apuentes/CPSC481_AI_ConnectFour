@@ -117,7 +117,7 @@
         }
         //Check for vertical winner
         consec = 0;
-        for (let i=0; i<3; i++)
+        for (let i=0; i<4; i++)
         {
             if (board[i][pPieceCol]==player)
             {
@@ -175,6 +175,7 @@
                 {
                     console.log("Player "+player+"is the WIENER!!!!");
                 }
+                console.log(board);
                 addPiece = false;
             }
         }
@@ -221,7 +222,6 @@
                     {
                         row = pieceRowLoc[i];
                         board[i][pPieceCol] = player;
-                        console.log(board);
                         break;
                     }
                 }
@@ -229,14 +229,11 @@
                 {
  
                     newPlayerPiece = pPieces.pop();
-                    console.log("Player 1 piece assigned; Player="+player);
-
                 }
                 else if (player==-1)
                 {
 
                     newPlayerPiece = aiPieces.pop();
-                    console.log("Player AI piece assigned; Player="+player);
                 }
                 newPlayerPiece.x = this.pPosPiece.x;
 
