@@ -75,12 +75,17 @@
         }
 
         this.pPosPiece = this.add.sprite(242, 528, 'red').setScale(.5);
+        
         var pointer = this.input.activePointer;
         var gameBoard = this.add.image(400, 300, 'board');
         gameBoard.setScale(1.5);
         console.log(game.input.x+" "+game.input.y);
         this.posY = 0;
-
+        this.text = this.add.text(242, 15, " ", {
+        font: "25px Arial",
+        fill: "#ff0044",
+        align: "center"
+        });
 
     }
 
@@ -174,6 +179,14 @@
                 if(isWinner())
                 {
                     console.log("Player "+player+"is the WIENER!!!!");
+                    if (player == 1)
+                    {
+                        this.text.setText("YOU Win!");
+                    }
+                    else if (player == -1)
+                    {
+                        this.text.setText("YOU LOSE!");
+                    }
                 }
                 console.log(board);
                 addPiece = false;
