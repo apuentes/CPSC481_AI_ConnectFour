@@ -97,15 +97,16 @@
     }
 
     //TODO pass in player
-    function isWinner()
+    function evalFunction(curPlayer)
     {
         //Check for horizontal winner
         let consec = 0;
-        for (let i=0; i<=5; i++)
+        let maxConsec = 0;
+        for (let row=0; row<=5; row++)
         {
-            for (let j=0; j<=6; j++)
+            for (let col=0; col<=6; col++)
             {
-                if (board[i][j]==player)
+                if (board[row][col]==curPlayer)
                 {
                     consec = consec +1;
                     if (consec==4)
@@ -113,8 +114,12 @@
                         return true;
                     }
                 }
-                else if(board[i][j]==0)
+                else if(board[row][col]==0 || board[row][col]==-curPlayer)
                 {
+                    if (consec < maxConsec)
+                    {
+                        maxConsec = consec;
+                    }
                     consec = 0;
                 }
             }
@@ -122,48 +127,157 @@
         }
         //Check for vertical winner
         consec = 0;
-        for (let i=0; i<4; i++)
+        for (let col=0; col<=6; col++)
         {
-            if (board[i][pPieceCol]==player)
+            for (let row=0; row<=5; row++)
             {
-                consec = consec+1;
-                if (consec==4)
+                if (board[row][col]==curPlayer)
                 {
-                    return true;
+                    consec = consec+1;
+                    if (consec==4)
+                    {
+                        return true;
+                    }
                 }
-            }
-            else
-            {
+                else
+                {
+                    if (consec < maxConsec)
+                        {
+                            maxConsec = consec;
+                        }
                     consec = 0;
+                }
             }
         }
         //Check positive slope winner
-        for (let i=0; i<3; i++)
+        for (let row=0; row<3; row++)
         {
-            for (let j=0; j<4; j++)
+            for (let col=0; col<4; col++)
             {
-                if (board[i][j]==player && board[i+1][j+1]==player && board[i+2][j+2]==player && board[i+3][j+3]==player)
+                if (board[row][col]==curPlayer && board[row+1][col+1]==curPlayer && board[row+2][col+2]==curPlayer && board[row+3][col+3]==curPlayer)
                 {
                     return true;
                 }
             }
          }
         //Check negative slope winner
-        for (let i=5; i>2; i--)
+        for (let row=5; row>2; row--)
         {
-            for (let j=0; j<4; j++)
+            for (let col=0; col<4; col++)
             {
-                if (board[i][j]==player && board[i-1][j+1]==player && board[i-2][j+2]==player && board[i-3][j+3]==player)
+                if (board[row][col]==curPlayer && board[row-1][col+1]==curPlayer && board[row-2][col+2]==curPlayer && board[row-3][col+3]==curPlayer)
                 {
                     return true;
                 }
             }
          }
-        player = -player;
+        //player = -player;
         return false;
 
     }
 
+    function updateBoard(board, player, col){
+        let b=structuredClone(board);
+        //console.log(col);
+        if (player)
+        {
+            for (let row=0; row<=5; row++)
+                {
+                    if (b[row][col] == 0)
+                    {
+                        //rowIndex = pieceRowLoc[row];
+                        rowIndex = row;
+                        b[row][col] = player;
+                        break;
+                    }
+                }
+        }
+        return {b,rowIndex};
+    }
+
+    function getRandInt(min, max)
+    {
+        min = Math.ceil(min);
+        max = Math.floor(max);
+        return Math.floor(Math.random() * (max - min) + min);
+    }
+
+    function miniMax(board, player, depth)
+    {
+
+    }
+
+    function aiEvalCheck(brd, curPlayer)
+    {
+        let consec = 0;
+        let maxConsec = 0;
+        let xCoord = 0;
+        let yCoord = 0;
+        b = structuredClone(brd);
+
+        for (let row=0; row<=5; row++)
+        {
+            for (let col=0; col<=6; col++)
+            {
+                if (b[row][col]==curPlayer)
+                {
+                    consec = consec +1;
+                    if (consec==4)
+                    {
+                        return true;
+                    }
+                }
+                else if(b[row][col]==0 || b[row][col]==-curPlayer)
+                {
+                    if (consec > maxConsec)
+                    {
+                        maxConsec = consec;
+                        xCoord = col;
+                        yCoord = row
+                    }
+                    consec = 0;
+                }
+            }
+ 
+        }
+        //Check for vertical winner
+        consec = 0;
+        for (let col=0; col<=6; col++)
+        {
+            for (let row=0; row<=5; row++)
+            {
+                if (b[row][col]==curPlayer)
+                {
+                    consec = consec+1;
+                    if (consec==4)
+                    {
+                        return true;
+                    }
+                }
+                else
+                {
+                    if (consec > maxConsec)
+                        {
+                            maxConsec = consec;
+                            xCoord = col;
+                            yCoord = row;
+                        }
+                    consec = 0;
+                }
+            }
+        }
+        return {xCoord, yCoord};
+    }
+
+    function aiPlayer(brd)
+    {
+        let col = getRandInt(0,7);
+        //let boardVals = updateBoard(brd, -1, col);
+        //let aiPosVal = aiEvalCheck(boardVals.b, -1)
+        //brd[aiPosVal.yCoord][aiPosVal.xCoord]=-1
+        return {col};
+    }
+ 
     function update()
     {
         
@@ -176,17 +290,23 @@
             else if (newPlayerPiece.y >= row)
             {
 
-                if(isWinner())
+                if(evalFunction(player))
                 {
                     console.log("Player "+player+"is the WIENER!!!!");
                     if (player == 1)
                     {
                         this.text.setText("YOU Win!");
+                        player = 999;
                     }
                     else if (player == -1)
                     {
                         this.text.setText("YOU LOSE!");
+                        player = 999;
                     }
+                }
+                else
+                {
+                    player = -player
                 }
                 console.log(board);
                 addPiece = false;
@@ -224,20 +344,23 @@
                 this.keyReleased = false;
             }
         }
-        else if (this.enter.isDown)
+        else if (this.enter.isDown && player ==1)
         {
             
             if (this.keyReleased==true)
             {
-                for (let i=0; i<=5; i++)
-                {
-                    if (board[i][pPieceCol] == 0)
-                    {
-                        row = pieceRowLoc[i];
-                        board[i][pPieceCol] = player;
-                        break;
-                    }
-                }
+//                for (let i=0; i<=5; i++)
+//                {
+//                    if (board[i][pPieceCol] == 0)
+//                    {
+//                        row = pieceRowLoc[i];
+//                        board[i][pPieceCol] = player;
+//                        break;
+//                    }
+//                }
+                let vals=updateBoard(board, player, pPieceCol);
+                board = vals.b;
+                row = pieceRowLoc[vals.rowIndex];
                 if (player==1)
                 {
  
@@ -260,6 +383,19 @@
                 !addPiece)
         {
             this.keyReleased = true;
+        }
+
+        if (player==-1 && addPiece==false)
+        {
+            let aiPosVals = aiPlayer();
+            let bVals = updateBoard(board,player,aiPosVals.col);
+            board = bVals.b;
+            newPlayerPiece = aiPieces.pop();
+            newPlayerPiece.x = pieceColLoc[aiPosVals.col];
+            row = pieceRowLoc[bVals.rowIndex];
+            console.log(newPlayerPiece);
+            addPiece = true;
+
         }
 
          
