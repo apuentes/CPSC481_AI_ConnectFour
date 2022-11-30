@@ -206,18 +206,14 @@
         return Math.floor(Math.random() * (max - min) + min);
     }
 
-    function miniMax(board, player, depth)
-    {
-
-    }
-
-    function aiEvalCheck(brd, curPlayer)
+    function aiEvalCheck(curPlayer)
     {
         let consec = 0;
         let maxConsec = 0;
         let xCoord = 0;
         let yCoord = 0;
-        b = structuredClone(brd);
+        //b = structuredClone(brd);
+        b = board;
 
         for (let row=0; row<=5; row++)
         {
@@ -339,12 +335,23 @@
          }
         return {xCoord, yCoord};
     }
+        
+    function miniMax(brd, player, depth)
+    {
+        b = structuredClone(brd);
+        if (depth==0)
+        {
+             
+        }
+        
+
+    }
 
     function aiPlayer(brd)
     {
         let col = getRandInt(0,7);
         //let boardVals = updateBoard(brd, -1, col);
-        let aiPosVal = aiEvalCheck(brd, -1);
+        let aiPosVal = aiEvalCheck(-1);
         //brd[aiPosVal.yCoord][aiPosVal.xCoord]=-1
         return {aiPosVal};
     }
