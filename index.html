@@ -288,6 +288,7 @@
                 {
                     if (maxConsec < 3)
                     {
+                        console.log("checking AI best move Positive slope");
                         maxConsec = 3;
                         xCoord = col+3;
                         yCoord = row+3;
@@ -297,6 +298,7 @@
                 {
                     if (maxConsec < 2)
                     {
+                        console.log("checking AI best move Positive slope");
                         maxConsec = 2;
                         xCoord = col+2;
                         yCoord = row+2;
@@ -317,6 +319,7 @@
                 {
                     if (maxConsec < 3)
                     {
+                        console.log("checking AI best move Negative slope");
                         maxConsec = 3;
                         xCoord = col+3;
                         yCoord = row-3;
@@ -353,7 +356,7 @@
         {
             if (newPlayerPiece.y < row)
             {
-                newPlayerPiece.y = newPlayerPiece.y +10;
+                newPlayerPiece.y = newPlayerPiece.y +30;
             }
             else if (newPlayerPiece.y >= row)
             {
