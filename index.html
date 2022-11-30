@@ -326,6 +326,7 @@
                 {
                     if (maxConsec < 2)
                     {
+                        console.log("checking AI best move Negative slope");
                         maxConsec = 2;
                         xCoord = col+2;
                         yCoord = row-2;
@@ -333,7 +334,6 @@
                 }
             }
          }
-        console.log(maxConsec+" "+xCoord+","+yCoord);
         return {xCoord, yCoord};
     }
 
