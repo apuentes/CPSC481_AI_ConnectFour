@@ -227,7 +227,7 @@
                         return true;
                     }
                 }
-                else if(b[row][col]==0 || b[row][col]==-curPlayer)
+                else if(b[row][col]==0)
                 {
                     if (consec > maxConsec)
                     {
@@ -236,6 +236,10 @@
                         yCoord = row
                     }
                     consec = 0;
+                }
+                else
+                {
+                    consec =0;
                 }
             }
  
@@ -254,7 +258,7 @@
                         return true;
                     }
                 }
-                else
+                else if (b[row][col]==0)
                 {
                     if (consec > maxConsec)
                         {
@@ -264,8 +268,13 @@
                         }
                     consec = 0;
                 }
+                else
+                {
+                    consec=0;
+                }
             }
         }
+        console.log(maxConsec+" "+xCoord+","+yCoord);
         return {xCoord, yCoord};
     }
 
@@ -273,9 +282,9 @@
     {
         let col = getRandInt(0,7);
         //let boardVals = updateBoard(brd, -1, col);
-        //let aiPosVal = aiEvalCheck(boardVals.b, -1)
+        let aiPosVal = aiEvalCheck(brd, -1);
         //brd[aiPosVal.yCoord][aiPosVal.xCoord]=-1
-        return {col};
+        return {aiPosVal};
     }
  
     function update()
@@ -387,11 +396,11 @@
 
         if (player==-1 && addPiece==false)
         {
-            let aiPosVals = aiPlayer();
-            let bVals = updateBoard(board,player,aiPosVals.col);
+            let aiPosVals = aiPlayer(board);
+            let bVals = updateBoard(board,player,aiPosVals.aiPosVal.xCoord);
             board = bVals.b;
             newPlayerPiece = aiPieces.pop();
-            newPlayerPiece.x = pieceColLoc[aiPosVals.col];
+            newPlayerPiece.x = pieceColLoc[aiPosVals.aiPosVal.xCoord];
             row = pieceRowLoc[bVals.rowIndex];
             console.log(newPlayerPiece);
             addPiece = true;
