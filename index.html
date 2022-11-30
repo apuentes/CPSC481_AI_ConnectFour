@@ -111,7 +111,7 @@
                     consec = consec +1;
                     if (consec==4)
                     {
-                        console.log("horizontal winner at: "+[row][col]);
+                        console.log("horizontal winner at: "+row,col);
                         return true;
                     }
                 }
@@ -137,7 +137,7 @@
                     consec = consec+1;
                     if (consec==4)
                     {
-                        console.log("vertical winner at: "+[row][col]);
+                        console.log("vertical winner at: "+row,col);
                         return true;
                     }
                 }
@@ -158,7 +158,7 @@
             {
                 if (board[row][col]==curPlayer && board[row+1][col+1]==curPlayer && board[row+2][col+2]==curPlayer && board[row+3][col+3]==curPlayer)
                 {
-                    console.log("positive slope winner at: "+[row][col]);
+                    console.log("positive slope winner at: "+row,col);
                     return true;
                 }
             }
@@ -170,7 +170,7 @@
             {
                 if (board[row][col]==curPlayer && board[row-1][col+1]==curPlayer && board[row-2][col+2]==curPlayer && board[row-3][col+3]==curPlayer)
                 {
-                    console.log("negative slope winner at: "+[row][col]);
+                    console.log("negative slope winner at: "+row,col);
                     return true;
                 }
             }
