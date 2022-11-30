@@ -274,6 +274,65 @@
                 }
             }
         }
+        
+                //Check positive slope winner
+        for (let row=0; row<3; row++)
+        {
+            for (let col=0; col<4; col++)
+            {
+                if (b[row][col]==curPlayer && b[row+1][col+1]==curPlayer && b[row+2][col+2]==curPlayer && b[row+3][col+3]==curPlayer)
+                {
+                    return true;
+                }
+                if (b[row][col]==curPlayer && b[row+1][col+1]==curPlayer && b[row+2][col+2]==curPlayer && b[row+3][col+3]==0)
+                {
+                    if (maxConsec < 3)
+                    {
+                        maxConsec = 3;
+                        xCoord = col+3;
+                        yCoord = row+3;
+                    }
+                }
+                if (b[row][col]==curPlayer && b[row+1][col+1]==curPlayer && b[row+2][col+2]==0)
+                {
+                    if (maxConsec < 2)
+                    {
+                        maxConsec = 2;
+                        xCoord = col+2;
+                        yCoord = row+2;
+                    }
+                }
+            }
+         }
+        //Check negative slope winner
+        for (let row=5; row>2; row--)
+        {
+            for (let col=0; col<4; col++)
+            {
+                if (b[row][col]==curPlayer && b[row-1][col+1]==curPlayer && b[row-2][col+2]==curPlayer && b[row-3][col+3]==curPlayer)
+                {
+                    return true;
+                }
+                if (b[row][col]==curPlayer && b[row-1][col+1]==curPlayer && b[row-2][col+2]==curPlayer && b[row-3][col+3]==0)
+                {
+                    if (maxConsec < 3)
+                    {
+                        maxConsec = 3;
+                        xCoord = col+3;
+                        yCoord = row-3;
+                    }
+                }
+                if (b[row][col]==curPlayer && b[row-1][col+1]==curPlayer && b[row-2][col+2]==0)
+                {
+                    if (maxConsec < 2)
+                    {
+                        maxConsec = 2;
+                        xCoord = col+2;
+                        yCoord = row-2;
+                    }
+                }
+            }
+         }
         console.log(maxConsec+" "+xCoord+","+yCoord);
         return {xCoord, yCoord};
     }
