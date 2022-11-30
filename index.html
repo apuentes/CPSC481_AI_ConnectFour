@@ -111,6 +111,7 @@
                     consec = consec +1;
                     if (consec==4)
                     {
+                        console.log("horizontal winner at: "+[row][col]);
                         return true;
                     }
                 }
@@ -136,6 +137,7 @@
                     consec = consec+1;
                     if (consec==4)
                     {
+                        console.log("vertical winner at: "+[row][col]);
                         return true;
                     }
                 }
@@ -156,6 +158,7 @@
             {
                 if (board[row][col]==curPlayer && board[row+1][col+1]==curPlayer && board[row+2][col+2]==curPlayer && board[row+3][col+3]==curPlayer)
                 {
+                    console.log("positive slope winner at: "+[row][col]);
                     return true;
                 }
             }
@@ -167,6 +170,7 @@
             {
                 if (board[row][col]==curPlayer && board[row-1][col+1]==curPlayer && board[row-2][col+2]==curPlayer && board[row-3][col+3]==curPlayer)
                 {
+                    console.log("negative slope winner at: "+[row][col]);
                     return true;
                 }
             }
@@ -288,7 +292,6 @@
                 {
                     if (maxConsec < 3)
                     {
-                        console.log("checking AI best move Positive slope");
                         maxConsec = 3;
                         xCoord = col+3;
                         yCoord = row+3;
@@ -298,7 +301,6 @@
                 {
                     if (maxConsec < 2)
                     {
-                        console.log("checking AI best move Positive slope");
                         maxConsec = 2;
                         xCoord = col+2;
                         yCoord = row+2;
@@ -319,7 +321,6 @@
                 {
                     if (maxConsec < 3)
                     {
-                        console.log("checking AI best move Negative slope");
                         maxConsec = 3;
                         xCoord = col+3;
                         yCoord = row-3;
@@ -329,7 +330,6 @@
                 {
                     if (maxConsec < 2)
                     {
-                        console.log("checking AI best move Negative slope");
                         maxConsec = 2;
                         xCoord = col+2;
                         yCoord = row-2;
