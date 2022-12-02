@@ -381,6 +381,7 @@
 			{
 				let b = structuredClone(brd);
 				b = updateBoard(b, player, openColumnList[c]).b;
+				console.log("Board in MiniMax: "+b);
 				let nScore = miniMax(b, -player, depth -1, alpha, beta)[1];
 				
 				if (nScore > value)
