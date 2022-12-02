@@ -206,14 +206,13 @@
         return Math.floor(Math.random() * (max - min) + min);
     }
 
-    function aiEvalCheck(curPlayer)
+    function aiEvalCheck(brd, curPlayer)
     {
         let consec = 0;
         let maxConsec = 0;
         let xCoord = 0;
         let yCoord = 0;
-        //b = structuredClone(brd);
-        b = board;
+        b = structuredClone(brd);
 
         for (let row=0; row<=5; row++)
         {
@@ -345,25 +344,57 @@
         return true;
     }
         
-    function miniMax(brd, player, depth)
+    function miniMax(brd, player, depth, alpha, beta)
     {
         if (evalFunction(brd, -1)) return [-1, 99999999];
         if (evalFunction(brd, 1)) return [-1, -99999999];
         if (boardFull(brd)) return [-1, 0];
         if (depth == 0) return [-1, 5];
         
-        let v = miniMax(brd, player, depth - 1);
-        
-        return v;
+        if (player == -1)
+		{
+			var value = Number.NEGATIVE_INFINITY;
+			var col = -1;
+			let piecePosition = aiEvalCheck(brd, player);
+			let b = structuredClone(brd);
+			b = updateBoard(b, player, piecePosition.xCoord).b;
+			var nScore = miniMax(b, -player, depth -1, alpha, beta)[1];
+			if (nScore > value)
+			{
+				value = nScore;
+				col = piecePosition.xCoord;
+			}
+			alpha = Math.max(alpha, value);
+			if (alpha >= beta) break;
+			//return [col, value];
+		}
+		else
+		{
+			var value = Number.POSITIVE_INFINITY;
+			var col = -1;
+			let piecePosition = aiEvalCheck(brd, player);
+			let b = structuredClone(brd);
+			b = updateBoard(b, player, piecePosition.xCoord).b;
+			var nScore = miniMax(b, -player, depth -1, alpha, beta)[1];
+			if (nScore < value)
+			{
+				value = nScore;
+				col = piecePosition.xCoord;
+			}
+			beta = Math.min(alpha, value);
+			if (alpha >= beta) break;
+			//return [col, value];
+		}
+		return [col, value];
     }
 
     function aiPlayer(brd)
     {
         let col = getRandInt(0,7);
         //let boardVals = updateBoard(brd, -1, col);
-        let v = miniMax(brd, -1, 3);
+        let v = miniMax(brd, -1, 3, Number.NEGATIVE_INFINITY, Number.POSITIVE_INFINITY);
         console.log("value back from miniMax: "+v);
-        let aiPosVal = aiEvalCheck(-1);
+        let aiPosVal = aiEvalCheck(brd,-1);
         return {aiPosVal};
     }
  
