@@ -358,10 +358,10 @@
 			let piecePosition = aiEvalCheck(brd, player);
 			let b = structuredClone(brd);
 			b = updateBoard(b, player, piecePosition.xCoord).b;
-			var nScore = miniMax(b, -player, depth -1, alpha, beta)[1];
-			if (nScore > value)
+			var nScore = miniMax(b, -player, depth -1, alpha, beta);
+			if (nScore[1] > value)
 			{
-				value = nScore;
+				value = nScore[1];
 				col = piecePosition.xCoord;
 			}
 			alpha = Math.max(alpha, value);
@@ -375,10 +375,10 @@
 			let piecePosition = aiEvalCheck(brd, player);
 			let b = structuredClone(brd);
 			b = updateBoard(b, player, piecePosition.xCoord).b;
-			var nScore = miniMax(b, -player, depth -1, alpha, beta)[1];
-			if (nScore < value)
+			var nScore = miniMax(b, -player, depth -1, alpha, beta);
+			if (nScore[1] < value)
 			{
-				value = nScore;
+				value = nScore[1];
 				col = piecePosition.xCoord;
 			}
 			beta = Math.min(alpha, value);
