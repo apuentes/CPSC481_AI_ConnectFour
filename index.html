@@ -371,8 +371,9 @@
         if (evalFunction(-1)) return [-1, 99999999];
         if (evalFunction(1)) return [-1, -99999999];
         if (boardFull(brd)) return [-1, 0];
-	console.log("depth return value * player");
-        if (depth == 0) return [-1, aiEvalCheck(brd, player).maxConsec * player];
+	let playerScore = aiEvalCheck(brd, player).maxConsec * player;
+	console.log("depth return value * player: "+playerScore);
+        if (depth == 0) return [-1, playerScore];
         
         if (player == -1)
 		{
