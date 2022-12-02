@@ -378,11 +378,11 @@
 		{
 			let value = Number.NEGATIVE_INFINITY;
 			let col = -1;
-			console.log("Hardcoded openColumns: ");
+			console.log("Hardcoded openColumns and updateBoard: ");
 			for (c=0; c<7; c++)
 			{
 				let b = structuredClone(brd);
-				b = updateBoard(b, player, openColumnList[c]).b;
+				b = updateBoard(b, player, c).b;
 				console.log("Board in MiniMax: "+b);
 				let nScore = miniMax(b, -player, depth -1, alpha, beta)[1];
 				
@@ -405,7 +405,7 @@
 			for (c=0; c<7; c++)
 			{
 				let b = structuredClone(brd);
-				b = updateBoard(b, player, openColumnList[c]).b;
+				b = updateBoard(b, player, c).b;
 				let nScore = miniMax(b, -player, depth -1, alpha, beta)[1];
 				if (nScore < value)
 				{
