@@ -97,7 +97,7 @@
     }
 
     //TODO pass in player
-    function evalFunction(curPlayer)
+    function evalFunction(board,curPlayer)
     {
         //Check for horizontal winner
         let consec = 0;
@@ -383,7 +383,7 @@
 				let b = structuredClone(brd);
 				b = updateBoard(b, player, openColumnList[c]).b;
 				let nScore = miniMax(b, -player, depth -1, alpha, beta)[1];
-				console.log("nScore is: "n+Score[1]);
+				console.log("nScore is: "+nScore[1]);
 				if (nScore > value)
 				{
 					value = nScore;
@@ -440,7 +440,7 @@
             else if (newPlayerPiece.y >= row)
             {
 
-                if(evalFunction(player))
+                if(evalFunction(board,player))
                 {
                     console.log("Player "+player+"is the WIENER!!!!");
                     if (player == 1)
