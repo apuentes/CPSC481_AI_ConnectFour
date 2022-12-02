@@ -336,6 +336,15 @@
         return {xCoord, yCoord};
     }
         
+    function boardFull(brd)
+    {
+        for (let i=0; i<7; i++)
+        {
+            if (brd[5][i]==0) return false;
+        }
+        return true;
+    }
+        
     function miniMax(brd, player, depth)
     {
         if (evalFunction(brd, -1)) return [-1, 99999999];
