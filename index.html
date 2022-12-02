@@ -97,16 +97,17 @@
     }
 
     //TODO pass in player
-    function evalFunction(curPlayer)
+    function evalFunction(brd, curPlayer)
     {
         //Check for horizontal winner
         let consec = 0;
         let maxConsec = 0;
+        let b = structuredClone(brd);
         for (let row=0; row<=5; row++)
         {
             for (let col=0; col<=6; col++)
             {
-                if (board[row][col]==curPlayer)
+                if (b[row][col]==curPlayer)
                 {
                     consec = consec +1;
                     if (consec==4)
@@ -115,7 +116,7 @@
                         return true;
                     }
                 }
-                else if(board[row][col]==0 || board[row][col]==-curPlayer)
+                else if(b[row][col]==0 || b[row][col]==-curPlayer)
                 {
                     if (consec < maxConsec)
                     {
@@ -132,7 +133,7 @@
         {
             for (let row=0; row<=5; row++)
             {
-                if (board[row][col]==curPlayer)
+                if (b[row][col]==curPlayer)
                 {
                     consec = consec+1;
                     if (consec==4)
@@ -156,7 +157,7 @@
         {
             for (let col=0; col<4; col++)
             {
-                if (board[row][col]==curPlayer && board[row+1][col+1]==curPlayer && board[row+2][col+2]==curPlayer && board[row+3][col+3]==curPlayer)
+                if (b[row][col]==curPlayer && b[row+1][col+1]==curPlayer && b[row+2][col+2]==curPlayer && b[row+3][col+3]==curPlayer)
                 {
                     console.log("positive slope winner at: "+row+3,col+3);
                     return true;
@@ -168,7 +169,7 @@
         {
             for (let col=0; col<4; col++)
             {
-                if (board[row][col]==curPlayer && board[row-1][col+1]==curPlayer && board[row-2][col+2]==curPlayer && board[row-3][col+3]==curPlayer)
+                if (b[row][col]==curPlayer && b[row-1][col+1]==curPlayer && b[row-2][col+2]==curPlayer && b[row-3][col+3]==curPlayer)
                 {
                     console.log("negative slope winner at: "+row-3,col+3);
                     return true;
@@ -182,14 +183,12 @@
 
     function updateBoard(board, player, col){
         let b=structuredClone(board);
-        //console.log(col);
         if (player)
         {
             for (let row=0; row<=5; row++)
                 {
                     if (b[row][col] == 0)
                     {
-                        //rowIndex = pieceRowLoc[row];
                         rowIndex = row;
                         b[row][col] = player;
                         break;
@@ -206,14 +205,13 @@
         return Math.floor(Math.random() * (max - min) + min);
     }
 
-    function aiEvalCheck(curPlayer)
+    function aiEvalCheck(brd, curPlayer)
     {
         let consec = 0;
         let maxConsec = 0;
         let xCoord = 0;
         let yCoord = 0;
-        //b = structuredClone(brd);
-        b = board;
+        let b = structuredClone(brd);
 
         for (let row=0; row<=5; row++)
         {
@@ -333,27 +331,125 @@
                 }
             }
          }
-        return {xCoord, yCoord};
+        return {xCoord, yCoord, maxConsec};
+    }
+
+    function boardFull(brd)
+    {
+        for (let col=0; col<7; col++)
+        {
+            if (brd[5][col]==0) return false;
+        }
+        return false;
+    }
+
+    function aiEvaluationFunc()
+    {
     }
         
-    function miniMax(brd, player, depth)
+    function zzzminiMax(brd, maxPlyr, depth)
     {
-        b = structuredClone(brd);
-        if (depth==0)
+        let b = structuredClone(brd);
+        let currentPlyr = maxPlyr;
+        let winnerFnd = aiEvalCheck(b, currentPlyr); // 4 in a row found and true returned
+        if (depth==0 || winnerFnd===true || boardFull(b))
         {
-             
+            return currentPlyr;                         
         }
-        
+        // Maximizing Player
+        if (maxPlyr == -1)
+        {
+            //value = -9999999999
+            let aiPosVals = aiEvalCheck(b, maxPlyr); // find an optimal position for AI
+            let bVals = updateBoard(b,maxPlyr,aiPosVals.aiPosVal.xCoord);            
+            let plyr = miniMax(b, -maxPlyr, depth-1); //
+        }
+        // Minimizing Player
+  /*       else {
+            value = 9999999999
+            let aiPosVals = aiEvalCheck(b, maxPlyr); // find an optimal position for AI
+            let bVals = updateBoard(b, maxPlyr, aiPosVals.aiPosVal.xCoord);
+            pValue = miniMax(b, -maxPlyr, depth - 1); // 
+        } */
+        return plyr;
 
     }
+
+    function is_terminal_node (brd)
+    {
+        return evalFunction(brd, -1) || evalFunction(brd, 1) || boardFull(brd);
+    }
+    function minimax(brd, depth, alpha, beta, maximizingPlayer)
+    {
+	is_terminal = is_terminal_node(brd);
+	if (depth == 0 || is_terminal)
+    {
+		if (is_terminal)
+        {
+			if (evalFunction(brd, -1))
+            {
+				return [None, 100000000000000];
+            }
+			else if (evalFunction(brd, 1))
+            {
+				return [None, -10000000000000];
+            }
+			else //Game is over, no more valid moves
+				return [None, 0];
+        }
+		else // Depth is zero
+			return [None, aiEvalCheck(brd, -1).maxConsec];
+    }
+	if (maximizingPlayer==-1)
+    {
+		value = -9999999999999999999999;
+		for (let col =0; col<7; col++)
+			c = aiEvalCheck(brd, maximizingPlayer);
+			b = structuredClone(brd);
+			b = updateBoard(b,maximizingPlayer, c);
+			new_score = minimax(b, depth-1, alpha, beta, -maximizingPlayer)[1];
+			if (new_score > value)
+            {
+				value = new_score;
+				column = c;
+            }
+			alpha = Math.max(alpha, value)
+			if (alpha >= beta)
+            {
+				return;
+            }
+		return [column, value];
+    }
+	else
+    { //Minimizing player
+        value = 9999999999999999999999;
+		for (let col =0; col<7; col++)
+			c = aiEvalCheck(brd, maximizingPlayer);
+			b = structuredClone(brd);
+			b = updateBoard(b,maximizingPlayer, c);
+			new_score = minimax(b, depth-1, alpha, beta, -maximizingPlayer)[1];
+			if (new_score < value)
+            {
+				value = new_score;
+				column = c;
+            }
+			beta = Math.min(alpha, value);
+			if (alpha >= beta)
+            {
+				return;
+            }
+		return [column, value];
+        }
+    }
+
 
     function aiPlayer(brd)
     {
-        let col = getRandInt(0,7);
-        //let boardVals = updateBoard(brd, -1, col);
-        let aiPosVal = aiEvalCheck(-1);
-        //brd[aiPosVal.yCoord][aiPosVal.xCoord]=-1
-        return {aiPosVal};
+        //let col = getRandInt(0,7);
+        //let bestPlyrPosition = miniMax(brd, -1, 5); // find the best position for either player to block or improve
+        //let aiPosVal = aiEvalCheck(brd, -1);
+        let playPlyr = minimax(brd,9999999999999999999999,-9999999999999999999999, 2, -1);
+        return playPlyr[0];
     }
  
     function update()
@@ -363,12 +459,12 @@
         {
             if (newPlayerPiece.y < row)
             {
-                newPlayerPiece.y = newPlayerPiece.y +30;
+                newPlayerPiece.y = newPlayerPiece.y +20;
             }
             else if (newPlayerPiece.y >= row)
             {
 
-                if(evalFunction(player))
+                if(evalFunction(board,player))
                 {
                     console.log("Player "+player+"is the WIENER!!!!");
                     if (player == 1)
@@ -469,7 +565,8 @@
             let bVals = updateBoard(board,player,aiPosVals.aiPosVal.xCoord);
             board = bVals.b;
             newPlayerPiece = aiPieces.pop();
-            newPlayerPiece.x = pieceColLoc[aiPosVals.aiPosVal.xCoord];
+            //newPlayerPiece.x = pieceColLoc[aiPosVals.aiPosVal.xCoord];
+            newPlayerPiece.x = pieceColLoc[aiPosVals];
             row = pieceRowLoc[bVals.rowIndex];
             addPiece = true;
 
