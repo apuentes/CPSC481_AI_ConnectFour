@@ -390,14 +390,13 @@
 				}
 				alpha = Math.max(alpha, value);
 				if (alpha >= beta) return;
-				}
-			console.log("nScore is: "+nScore);
+			}
 			return [col, value];
 		}
 		else
 		{
-			//var value = Number.POSITIVE_INFINITY;
-			//var col = -1;
+			var value = Number.POSITIVE_INFINITY;
+			var col = -1;
 			for (c=0; c<=openColumnList.length; c++)
 			{
 				let b = structuredClone(brd);
