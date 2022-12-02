@@ -371,7 +371,7 @@
         if (evalFunction(brd, -1)) return [-1, 99999999];
         if (evalFunction(brd, 1)) return [-1, -99999999];
         if (boardFull(brd)) return [-1, 0];
-        if (depth == 0) return [-1, aiEvalCheck(brd, player).maxConsec];
+        if (depth == 0) return [-1, 5];
         
         if (player == -1)
 		{
@@ -396,8 +396,8 @@
 		}
 		else
 		{
-			var value = Number.POSITIVE_INFINITY;
-			var col = -1;
+			//var value = Number.POSITIVE_INFINITY;
+			//var col = -1;
 			for (c=0; c<=openColumnList.length; c++)
 			{
 				let b = structuredClone(brd);
