@@ -379,7 +379,7 @@
 			let value = Number.NEGATIVE_INFINITY;
 			let col = -1;
 			console.log("Hardcoded openColumns: ");
-			for (c=0; c<=7; c++)
+			for (c=0; c<7; c++)
 			{
 				let b = structuredClone(brd);
 				b = updateBoard(b, player, openColumnList[c]).b;
@@ -402,7 +402,7 @@
 		{
 			let value = Number.POSITIVE_INFINITY;
 			let col = -1;
-			for (c=0; c<=7; c++)
+			for (c=0; c<7; c++)
 			{
 				let b = structuredClone(brd);
 				b = updateBoard(b, player, openColumnList[c]).b;
