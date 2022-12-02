@@ -371,14 +371,14 @@
         if (evalFunction(brd, -1)) return [-1, 99999999];
         if (evalFunction(brd, 1)) return [-1, -99999999];
         if (boardFull(brd)) return [-1, 0];
-	let playerScore = aiEvalCheck(brd, player).maxConsec * player;
-	console.log("depth return value * player: "+playerScore);
+	let playerScore = aiEvalCheck(brd, player).maxConsec * player;	
         if (depth == 0) return [-1, playerScore];
         
         if (player == -1)
 		{
 			let value = Number.NEGATIVE_INFINITY;
 			let col = -1;
+			console.log("Hardcoded openColumns: ");
 			for (c=0; c<=7; c++)
 			{
 				let b = structuredClone(brd);
