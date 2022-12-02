@@ -365,7 +365,7 @@
 				col = piecePosition.xCoord;
 			}
 			alpha = Math.max(alpha, value);
-			if (alpha >= beta) break;
+			if (alpha >= beta) return;
 			//return [col, value];
 		}
 		else
@@ -382,7 +382,7 @@
 				col = piecePosition.xCoord;
 			}
 			beta = Math.min(alpha, value);
-			if (alpha >= beta) break;
+			if (alpha >= beta) return;
 			//return [col, value];
 		}
 		return [col, value];
