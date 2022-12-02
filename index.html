@@ -332,7 +332,7 @@
                 }
             }
          }
-        return {xCoord, yCoord};
+        return {xCoord, yCoord,maxConsec};
     }
         
     function boardFull(brd)
@@ -343,46 +343,72 @@
         }
         return true;
     }
+	    
+    function getOpenCol(brd)
+	    {
+		    var openCol = [];
+		    for (r=0, r<6; r++)
+		    {
+			    for (c=0; c<7; c++)
+			    {
+				    if (brd[r][c] == 0)
+				    {
+					    openCol.push(c);
+				    }
+				    
+			    }
+			if (openCol.length > 0)
+			{
+				return openCol;
+			}
+		    }
+				    
+	    }
         
     function miniMax(brd, player, depth, alpha, beta)
     {
+	var openColumnList = getOpenCol(brd);
         if (evalFunction(brd, -1)) return [-1, 99999999];
         if (evalFunction(brd, 1)) return [-1, -99999999];
         if (boardFull(brd)) return [-1, 0];
-        if (depth == 0) return [-1, 5];
+        if (depth == 0) return [-1, evalFunction(brd, player).maxConsec];
         
         if (player == -1)
 		{
 			var value = Number.NEGATIVE_INFINITY;
 			var col = -1;
-			let piecePosition = aiEvalCheck(brd, player);
-			let b = structuredClone(brd);
-			b = updateBoard(b, player, piecePosition.xCoord).b;
-			var nScore = miniMax(b, -player, depth -1, alpha, beta);
-			if (nScore[1] > value)
+			for (c=0; c<=openColumnList.length; c++)
 			{
-				value = nScore[1];
-				col = piecePosition.xCoord;
-			}
-			alpha = Math.max(alpha, value);
-			if (alpha >= beta) return;
+				let b = structuredClone(brd);
+				b = updateBoard(b, player, openColumnList[c]).b;
+				let nScore = miniMax(b, -player, depth -1, alpha, beta)[1];
+				if (nScore > value)
+				{
+					value = nScore;
+					col = openColumnList[c];
+				}
+				alpha = Math.max(alpha, value);
+				if (alpha >= beta) return;
+				}
+			
 			return [col, value];
 		}
 		else
 		{
-			var value = Number.POSITIVE_INFINITY;
-			var col = -1;
-			let piecePosition = aiEvalCheck(brd, player);
-			let b = structuredClone(brd);
-			b = updateBoard(b, player, piecePosition.xCoord).b;
-			var nScore = miniMax(b, -player, depth -1, alpha, beta);
-			if (nScore[1] < value)
+			for (c=0; c<=openColumnList.length; c++)
 			{
-				value = nScore[1];
-				col = piecePosition.xCoord;
-			}
-			beta = Math.min(alpha, value);
-			if (alpha >= beta) return;
+				let b = structuredClone(brd);
+				b = updateBoard(b, player, openColumnList[c]).b;
+				let nScore = miniMax(b, -player, depth -1, alpha, beta)[1];
+				if (nScore < value)
+				{
+					value = nScore;
+					col = openColumnList[c];
+				}
+				beta = Math.min(alpha, value);
+				if (alpha >= beta) return;
+				}
+			
 			return [col, value];
 		}
 		//return [col, value];
