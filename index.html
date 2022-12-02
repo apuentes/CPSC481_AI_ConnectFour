@@ -379,7 +379,7 @@
 		{
 			let value = Number.NEGATIVE_INFINITY;
 			let col = -1;
-			for (c=0; c<=openColumnList.length; c++)
+			for (c=0; c<=7; c++)
 			{
 				let b = structuredClone(brd);
 				b = updateBoard(b, player, openColumnList[c]).b;
@@ -390,7 +390,8 @@
 				{
 					
 					value = nScore;
-					col = openColumnList[c];
+					//col = openColumnList[c];
+					col=c;
 				}
 				alpha = Math.max(alpha, value);
 				if (alpha >= beta) return;
@@ -401,7 +402,7 @@
 		{
 			let value = Number.POSITIVE_INFINITY;
 			let col = -1;
-			for (c=0; c<=openColumnList.length; c++)
+			for (c=0; c<=7; c++)
 			{
 				let b = structuredClone(brd);
 				b = updateBoard(b, player, openColumnList[c]).b;
@@ -409,7 +410,8 @@
 				if (nScore < value)
 				{
 					value = nScore;
-					col = openColumnList[c];
+					//col = openColumnList[c];
+					col=c;
 				}				
 				beta = Math.min(beta, value);
 				if (alpha >= beta) return;
