@@ -366,7 +366,7 @@
 			}
 			alpha = Math.max(alpha, value);
 			if (alpha >= beta) return;
-			//return [col, value];
+			return [col, value];
 		}
 		else
 		{
@@ -383,17 +383,17 @@
 			}
 			beta = Math.min(alpha, value);
 			if (alpha >= beta) return;
-			//return [col, value];
+			return [col, value];
 		}
-		return [col, value];
+		//return [col, value];
     }
 
     function aiPlayer(brd)
     {
         let col = getRandInt(0,7);
         //let boardVals = updateBoard(brd, -1, col);
-        //let v = miniMax(brd, -1, 3, Number.NEGATIVE_INFINITY, Number.POSITIVE_INFINITY);
-        //console.log("value back from miniMax: "+v);
+        let v = miniMax(brd, -1, 3, Number.NEGATIVE_INFINITY, Number.POSITIVE_INFINITY);
+        console.log("value back from miniMax: "+v);
         let aiPosVal = aiEvalCheck(brd,-1);
         return {aiPosVal};
     }
