@@ -97,7 +97,7 @@
     }
 
     //TODO pass in player
-    function evalFunction(curPlayer)
+    function evalFunction(board, curPlayer)
     {
         //Check for horizontal winner
         let consec = 0;
@@ -368,8 +368,8 @@
     function miniMax(brd, player, depth, alpha, beta)
     {
 	var openColumnList = getOpenCol(brd);
-        if (evalFunction(-1)) return [-1, 99999999];
-        if (evalFunction(1)) return [-1, -99999999];
+        if (evalFunction(brd, -1)) return [-1, 99999999];
+        if (evalFunction(brd, 1)) return [-1, -99999999];
         if (boardFull(brd)) return [-1, 0];
 	let playerScore = aiEvalCheck(brd, player).maxConsec * player;
 	console.log("depth return value * player: "+playerScore);
@@ -442,7 +442,7 @@
             else if (newPlayerPiece.y >= row)
             {
 
-                if(evalFunction(player))
+                if(evalFunction(board, player))
                 {
                     console.log("Player "+player+"is the WIENER!!!!");
                     if (player == 1)
