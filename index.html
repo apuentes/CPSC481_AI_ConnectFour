@@ -397,7 +397,7 @@
 		else
 		{
 			console.log("added let in player side miniMax");
-			let value = 9999999999999999999;
+			let value = Number.POSITIVE_INFINITY;
 			let col = -1;
 			for (c=0; c<=openColumnList.length; c++)
 			{
@@ -409,7 +409,7 @@
 					value = nScore;
 					col = openColumnList[c];
 				}
-				beta = Math.min(alpha, value);
+				beta = Math.min(beta, value);
 				if (alpha >= beta) return;
 				}
 			
