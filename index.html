@@ -371,7 +371,8 @@
         if (evalFunction(brd, -1)) return [-1, 99999999];
         if (evalFunction(brd, 1)) return [-1, -99999999];
         if (boardFull(brd)) return [-1, 0];
-        if (depth == 0) return [-1, aiEvalCheck(brd, player).maxConsec];
+	var negateScore = player * aiEvalCheck(brd, player).maxConsec;
+        if (depth == 0) return [-1, negateScore];
         
         if (player == -1)
 		{
