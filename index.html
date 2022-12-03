@@ -34,7 +34,6 @@
             457-470  Col 5
             507-521  Col 6
             560-576  Col 7
-
             */
     var pieceColLoc = [242,296,349,400,452,505,558];
     var pieceRowLoc = [430,373,320,263,208,153];
@@ -102,12 +101,11 @@
         //Check for horizontal winner
         let consec = 0;
         let maxConsec = 0;
-        let b = structuredClone(brd);
         for (let row=0; row<=5; row++)
         {
             for (let col=0; col<=6; col++)
             {
-                if (b[row][col]==curPlayer)
+                if (board[row][col]==curPlayer)
                 {
                     consec = consec +1;
                     if (consec==4)
@@ -116,7 +114,7 @@
                         return true;
                     }
                 }
-                else if(b[row][col]==0 || b[row][col]==-curPlayer)
+                else if(board[row][col]==0 || board[row][col]==-curPlayer)
                 {
                     if (consec < maxConsec)
                     {
@@ -133,7 +131,7 @@
         {
             for (let row=0; row<=5; row++)
             {
-                if (b[row][col]==curPlayer)
+                if (board[row][col]==curPlayer)
                 {
                     consec = consec+1;
                     if (consec==4)
@@ -157,7 +155,7 @@
         {
             for (let col=0; col<4; col++)
             {
-                if (b[row][col]==curPlayer && b[row+1][col+1]==curPlayer && b[row+2][col+2]==curPlayer && b[row+3][col+3]==curPlayer)
+                if (board[row][col]==curPlayer && board[row+1][col+1]==curPlayer && board[row+2][col+2]==curPlayer && board[row+3][col+3]==curPlayer)
                 {
                     console.log("positive slope winner at: "+row+3,col+3);
                     return true;
@@ -169,7 +167,7 @@
         {
             for (let col=0; col<4; col++)
             {
-                if (b[row][col]==curPlayer && b[row-1][col+1]==curPlayer && b[row-2][col+2]==curPlayer && b[row-3][col+3]==curPlayer)
+                if (board[row][col]==curPlayer && board[row-1][col+1]==curPlayer && board[row-2][col+2]==curPlayer && board[row-3][col+3]==curPlayer)
                 {
                     console.log("negative slope winner at: "+row-3,col+3);
                     return true;
@@ -190,6 +188,7 @@
                 {
                     if (b[row][col] == 0)
                     {
+                        //rowIndex = pieceRowLoc[row];
                         rowIndex = row;
                         b[row][col] = player;
                         break;
@@ -422,74 +421,6 @@
 		//return [col, value];
     }
 
-    function is_terminal_node (brd)
-    {
-        return evalFunction(brd, -1) || evalFunction(brd, 1) || boardFull(brd);
-    }
-    function minimax(brd, depth, alpha, beta, maximizingPlayer)
-    {
-	is_terminal = is_terminal_node(brd);
-	if (depth == 0 || is_terminal)
-    {
-		if (is_terminal)
-        {
-			if (evalFunction(brd, -1))
-            {
-				return [None, 100000000000000];
-            }
-			else if (evalFunction(brd, 1))
-            {
-				return [None, -10000000000000];
-            }
-			else //Game is over, no more valid moves
-				return [None, 0];
-        }
-		else // Depth is zero
-			return [None, aiEvalCheck(brd, -1).maxConsec];
-    }
-	if (maximizingPlayer==-1)
-    {
-		value = -9999999999999999999999;
-		for (let col =0; col<7; col++)
-			c = aiEvalCheck(brd, maximizingPlayer);
-			b = structuredClone(brd);
-			b = updateBoard(b,maximizingPlayer, c);
-			new_score = minimax(b, depth-1, alpha, beta, -maximizingPlayer)[1];
-			if (new_score > value)
-            {
-				value = new_score;
-				column = c;
-            }
-			alpha = Math.max(alpha, value)
-			if (alpha >= beta)
-            {
-				return;
-            }
-		return [column, value];
-    }
-	else
-    { //Minimizing player
-        value = 9999999999999999999999;
-		for (let col =0; col<7; col++)
-			c = aiEvalCheck(brd, maximizingPlayer);
-			b = structuredClone(brd);
-			b = updateBoard(b,maximizingPlayer, c);
-			new_score = minimax(b, depth-1, alpha, beta, -maximizingPlayer)[1];
-			if (new_score < value)
-            {
-				value = new_score;
-				column = c;
-            }
-			beta = Math.min(alpha, value);
-			if (alpha >= beta)
-            {
-				return;
-            }
-		return [column, value];
-        }
-    }
-
-
     function aiPlayer(brd)
     {
         let col = getRandInt(0,7);
@@ -507,7 +438,7 @@
         {
             if (newPlayerPiece.y < row)
             {
-                newPlayerPiece.y = newPlayerPiece.y +20;
+                newPlayerPiece.y = newPlayerPiece.y +30;
             }
             else if (newPlayerPiece.y >= row)
             {
@@ -613,8 +544,7 @@
             let bVals = updateBoard(board,player,aiPosVals.aiPosVal.xCoord);
             board = bVals.b;
             newPlayerPiece = aiPieces.pop();
-            //newPlayerPiece.x = pieceColLoc[aiPosVals.aiPosVal.xCoord];
-            newPlayerPiece.x = pieceColLoc[aiPosVals];
+            newPlayerPiece.x = pieceColLoc[aiPosVals.aiPosVal.xCoord];
             row = pieceRowLoc[bVals.rowIndex];
             addPiece = true;
 
