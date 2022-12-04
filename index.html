@@ -111,6 +111,7 @@
                     if (consec==4)
                     {
                         console.log("horizontal winner at: "+row,col);
+                        console.log("Board in eval "+board);
                         return true;
                     }
                 }
@@ -123,7 +124,7 @@
                     consec = 0;
                 }
             }
- 
+            consec = 0; 
         }
         //Check for vertical winner
         consec = 0;
@@ -205,13 +206,13 @@
         return Math.floor(Math.random() * (max - min) + min);
     }
 
-    function aiEvalCheck(brd, curPlayer)
+    function aiEvalCheck(b, curPlayer)
     {
         let consec = 0;
         let maxConsec = 0;
         let xCoord = 0;
         let yCoord = 0;
-        b = structuredClone(brd);
+        //b = structuredClone(brd);
 
         for (let row=0; row<=5; row++)
         {
@@ -240,7 +241,7 @@
                     consec =0;
                 }
             }
- 
+            consec = 0;
         }
         //Check for vertical winner
         consec = 0;
@@ -346,13 +347,13 @@
     function getOpenCol(brd)
 	    {
 		    var openCol = [];
-		    for (r=0; r<6; r++)
+		    for (c=0; c<7; c++)
 		    {
-			    for (c=0; c<7; c++)
+			    for (r=0; r<6; r++)
 			    {
 				    if (brd[r][c] == 0)
 				    {
-					    openCol.push(c);
+					    openCol.push([c,r]);
 				    }
 				    
 			    }
@@ -366,25 +367,25 @@
         
     function miniMax(brd, player, depth, alpha, beta)
     {
-	var openColumnList = getOpenCol(brd);
+	    //var openColumnList = getOpenCol(brd);
         if (evalFunction(brd, -1)) return [-1, 99999999];
         if (evalFunction(brd, 1)) return [-1, -99999999];
         if (boardFull(brd)) return [-1, 0];
-	let playerScore = aiEvalCheck(brd, player).maxConsec * player;	
+	    let playerScore = aiEvalCheck(brd, player).maxConsec * -player;	
         if (depth == 0) return [-1, playerScore];
         
         if (player == -1)
 		{
 			let value = Number.NEGATIVE_INFINITY;
 			let col = -1;
-			console.log("Hardcoded openColumns and updateBoard: ");
 			for (c=0; c<7; c++)
 			{
+                //console.log("openPosList is:  "+openColumnList);
 				let b = structuredClone(brd);
-				b = updateBoard(b, player, c).b;
-				console.log("Board in MiniMax: "+b);
-				let nScore = miniMax(b, -player, depth -1, alpha, beta)[1];
-				
+                let p = aiEvalCheck(b, player);
+				b = updateBoard(b, player, p.xCoord).b;
+                //b[p.yCoord][p.xCoord] = player;
+				let nScore = miniMax(b, -player, depth -1, alpha, beta)[1];				
 				if (nScore > value)
 				{
 					
@@ -404,7 +405,9 @@
 			for (c=0; c<7; c++)
 			{
 				let b = structuredClone(brd);
-				b = updateBoard(b, player, c).b;
+                let p = aiEvalCheck(b, player);
+                b = updateBoard(b, player, p.xCoord).b;
+				//b[p.yCoord][p.xCoord] = player;
 				let nScore = miniMax(b, -player, depth -1, alpha, beta)[1];
 				if (nScore < value)
 				{
@@ -412,7 +415,7 @@
 					//col = openColumnList[c];
 					col=c;
 				}				
-				beta = Math.min(beta, value);
+				beta = Math.min(beta, value);                
 				if (alpha >= beta) return;
 				}
 			
@@ -423,12 +426,23 @@
 
     function aiPlayer(brd)
     {
-        let col = getRandInt(0,7);
-        //let boardVals = updateBoard(brd, -1, col);
-        let v = miniMax(brd, -1, 3, Number.NEGATIVE_INFINITY, Number.POSITIVE_INFINITY);
+        let v = miniMax(brd, -1, 5, Number.NEGATIVE_INFINITY, Number.POSITIVE_INFINITY);
         console.log("value back from miniMax: "+v);
-        let aiPosVal = aiEvalCheck(brd,-1);
-        return {aiPosVal};
+        let aiPosVal;
+        if (v[1] > 0)
+        {
+            aiPosVal = aiEvalCheck(brd,-1).xCoord;
+        }
+        else if (v[1] < 0)
+        {
+            aiPosVal = aiEvalCheck(brd,1).xCoord;
+        }
+        else
+        {
+            aiPosVal = aiEvalCheck(brd,-1).xCoord;
+        }
+        
+        return aiPosVal;
     }
  
     function update()
@@ -438,7 +452,7 @@
         {
             if (newPlayerPiece.y < row)
             {
-                newPlayerPiece.y = newPlayerPiece.y +30;
+                newPlayerPiece.y = newPlayerPiece.y +20;
             }
             else if (newPlayerPiece.y >= row)
             {
@@ -540,11 +554,11 @@
 
         if (player==-1 && addPiece==false)
         {
-            let aiPosVals = aiPlayer(board);
-            let bVals = updateBoard(board,player,aiPosVals.aiPosVal.xCoord);
+            let aiColPos = aiPlayer(board);
+            let bVals = updateBoard(board,player,aiColPos);
             board = bVals.b;
             newPlayerPiece = aiPieces.pop();
-            newPlayerPiece.x = pieceColLoc[aiPosVals.aiPosVal.xCoord];
+            newPlayerPiece.x = pieceColLoc[aiColPos];
             row = pieceRowLoc[bVals.rowIndex];
             addPiece = true;
 
