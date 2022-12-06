@@ -111,16 +111,11 @@
                     if (consec==4)
                     {
                         console.log("horizontal winner at: "+row,col);
-                        console.log("Board in eval "+board);
                         return true;
                     }
                 }
                 else if(board[row][col]==0 || board[row][col]==-curPlayer)
                 {
-                    if (consec < maxConsec)
-                    {
-                        maxConsec = consec;
-                    }
                     consec = 0;
                 }
             }
@@ -143,10 +138,6 @@
                 }
                 else
                 {
-                    if (consec < maxConsec)
-                        {
-                            maxConsec = consec;
-                        }
                     consec = 0;
                 }
             }
@@ -206,14 +197,80 @@
         return Math.floor(Math.random() * (max - min) + min);
     }
 
+    function sectionsOfFour(brd, curPlayer)
+    {   var section = new Array();
+        for (var row=0; row <6; row++)
+        {
+            for (var col=0; col<4; col++)
+            {
+                section.push([brd[row][col],brd[row][col+1],brd[row][col+2],brd[row][col+3]]);
+            }
+        }
+        for (let col=0; col<7; col++)
+        {
+            for (let row=0; row<3; row++)
+            {
+                section.push([brd[row][col],brd[row+1][col],brd[row+2][col],brd[row+3][col]]);
+            }
+        }
+        for (let row=0; row<3; row++)
+        {
+            for (let col=0; col<4; col++)
+            {
+                section.push([brd[row][col],brd[row+1][col+1],brd[row+2][col+2],brd[row+3][col+3]]);
+            }
+        }
+        for (let row=5; row>2; row--)
+        {
+            for (let col=0; col<4; col++)
+            {
+                section.push([brd[row][col],brd[row-1][col+1],brd[row-2][col+2],brd[row-3][col+3]]);
+            }
+        }
+        return section;
+    }
+
+    function sectionScore(section, player)
+    {
+        var scr = 0;
+        var plyrCnt = 0;
+        var oppCnt = 0;
+        var openPosCnt = 0;
+        for (var i=0; i<4; i++)
+        {
+            if (section[i] == player) plyrCnt +=1;
+            else if (section[i]== -player) oppCnt +=1;
+            else if (section[i]== 0) openPosCnt +=1;
+        }
+        if (plyrCnt == 4) scr +=1000;
+        if (plyrCnt == 3 && openPosCnt ==1) scr += 5;
+        if (plyrCnt ==2 && openPosCnt ==2) scr += 2;
+        if (oppCnt == 3 && openPosCnt ==1) scr -= 4;
+        
+        return scr;
+    }
+
+    function getScore(brd, player)
+    {
+        var scr = 0;
+        var sections = sectionsOfFour(brd);
+        for (var i=0; i < sections.length; i++)
+        {
+            scr += sectionScore(sections[i], player);
+        }
+        for ( var i =0; i<6; i++)
+        {
+            if (brd[i][3]==player) scr +=3;
+        }
+        return scr;
+    }
+
     function aiEvalCheck(b, curPlayer)
     {
-        let consec = 0;
-        let maxConsec = 0;
-        let xCoord = 0;
-        let yCoord = 0;
-        //b = structuredClone(brd);
-
+        var consec = 0;
+        var maxConsec = 0;
+        var xCoord = 0;
+        var yCoord = 0;
         for (let row=0; row<=5; row++)
         {
             for (let col=0; col<=6; col++)
@@ -228,11 +285,13 @@
                 }
                 else if(b[row][col]==0)
                 {
+                    
                     if (consec > maxConsec)
                     {
                         maxConsec = consec;
                         xCoord = col;
-                        yCoord = row
+                        yCoord = row;                     
+                        
                     }
                     consec = 0;
                 }
@@ -346,81 +405,94 @@
 	    
     function getOpenCol(brd)
 	    {
-		    var openCol = [];
+		    var openCol = [[],[],[],[],[],[],[]];
 		    for (c=0; c<7; c++)
 		    {
 			    for (r=0; r<6; r++)
 			    {
 				    if (brd[r][c] == 0)
 				    {
-					    openCol.push([c,r]);
+					    openCol[c] = [c,r];
+                        break;
 				    }
 				    
 			    }
+		    }            
 			if (openCol.length > 0)
 			{
 				return openCol;
 			}
-		    }
 				    
 	    }
         
     function miniMax(brd, player, depth, alpha, beta)
     {
-	    //var openColumnList = getOpenCol(brd);
+	    var openColumnList = getOpenCol(brd);
         if (evalFunction(brd, -1)) return [-1, 99999999];
         if (evalFunction(brd, 1)) return [-1, -99999999];
         if (boardFull(brd)) return [-1, 0];
-	    let playerScore = aiEvalCheck(brd, player).maxConsec * -player;	
-        if (depth == 0) return [-1, playerScore];
+	    //var playerScore = aiEvalCheck(brd, player).maxConsec * -player;	
+        if (depth == 0) return [-1, getScore(brd,-1)];
         
-        if (player == -1)
-		{
-			let value = Number.NEGATIVE_INFINITY;
-			let col = -1;
-			for (c=0; c<7; c++)
-			{
-                //console.log("openPosList is:  "+openColumnList);
-				let b = structuredClone(brd);
-                let p = aiEvalCheck(b, player);
-				b = updateBoard(b, player, p.xCoord).b;
-                //b[p.yCoord][p.xCoord] = player;
-				let nScore = miniMax(b, -player, depth -1, alpha, beta)[1];				
-				if (nScore > value)
-				{
-					
-					value = nScore;
-					//col = openColumnList[c];
-					col=c;
-				}
-				alpha = Math.max(alpha, value);
-				if (alpha >= beta) return;
-			}
-			return [col, value];
-		}
-		else
-		{
-			let value = Number.POSITIVE_INFINITY;
-			let col = -1;
-			for (c=0; c<7; c++)
-			{
-				let b = structuredClone(brd);
-                let p = aiEvalCheck(b, player);
-                b = updateBoard(b, player, p.xCoord).b;
-				//b[p.yCoord][p.xCoord] = player;
-				let nScore = miniMax(b, -player, depth -1, alpha, beta)[1];
-				if (nScore < value)
-				{
-					value = nScore;
-					//col = openColumnList[c];
-					col=c;
-				}				
-				beta = Math.min(beta, value);                
-				if (alpha >= beta) return;
-				}
-			
-			return [col, value];
-		}
+        if (player == -1) 
+        {
+        // Maximizing player
+        var value = Number.NEGATIVE_INFINITY;
+        var col = -1;
+        for (var i = 0; i < 7; i++) 
+        {
+            if (board[0][i] == 0) {
+                var boardCopy = new Array(6);
+                //boardCopy = structuredClone(brd);
+                for (var k = 0; k < board.length; k++)
+                    boardCopy[k] = brd[k].slice();
+                var j = 5;
+                for (j; j >= 0; j--) {
+                    if (boardCopy[j][i] == 0)
+                        break;
+                } 
+                boardCopy[j][i] = player;
+                var newScore = miniMax(boardCopy, -player, depth - 1, alpha, beta)[1];
+                if (newScore > value) {
+                    value = newScore;
+                    col = i;
+                }
+                alpha = Math.max(alpha, value);
+                if (alpha >= beta) break;
+            }
+            
+        }
+        return [col, value];
+    } else 
+    {
+        // Minimizing player
+        var value = Number.POSITIVE_INFINITY;
+        var col = -1;
+        for (var i = 0; i < 7; i++) 
+        {
+            if (board[0][i] == 0) {
+                var boardCopy = new Array(6);
+                //boardCopy = structuredClone(brd);
+                for (var k = 0; k < board.length; k++)
+                    boardCopy[k] = brd[k].slice();
+                var j = 5;
+                for (j; j >= 0; j--) {
+                    if (boardCopy[j][i] == 0)
+                        break;
+                }
+                boardCopy[j][i] = player;
+                var newScore = miniMax(boardCopy, -player, depth - 1, alpha, beta)[1];
+                if (newScore < value) {
+                    value = newScore;
+                    col = i;
+                }
+                beta = Math.min(beta, value);
+                if (alpha >= beta) break;
+            }
+            
+        }
+        return [col, value];
+    }
 		//return [col, value];
     }
 
@@ -428,20 +500,19 @@
     {
         let v = miniMax(brd, -1, 5, Number.NEGATIVE_INFINITY, Number.POSITIVE_INFINITY);
         console.log("value back from miniMax: "+v);
-        let aiPosVal;
-        if (v[1] > 0)
-        {
-            aiPosVal = aiEvalCheck(brd,-1).xCoord;
-        }
-        else if (v[1] < 0)
-        {
-            aiPosVal = aiEvalCheck(brd,1).xCoord;
-        }
-        else
-        {
-            aiPosVal = aiEvalCheck(brd,-1).xCoord;
-        }
-        
+        let aiPosVal=v[0];
+        // if (v[1] > 0)
+        // {
+        //     aiPosVal = aiEvalCheck(brd,-1).xCoord;
+        // }
+        // else if (v[1] < 0)
+        // {
+        //     aiPosVal = aiEvalCheck(brd,1).xCoord;
+        // }
+        // else
+        // {
+        //     aiPosVal = aiEvalCheck(brd,-1).xCoord;
+        // }
         return aiPosVal;
     }
  
@@ -554,7 +625,7 @@
 
         if (player==-1 && addPiece==false)
         {
-            let aiColPos = aiPlayer(board);
+            let aiColPos = miniMax(board,player,5,Math.NEGATIVE_INFINITY,Math.POSITIVE_INFINITY)[0];
             let bVals = updateBoard(board,player,aiColPos);
             board = bVals.b;
             newPlayerPiece = aiPieces.pop();
